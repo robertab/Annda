@@ -1,4 +1,4 @@
-from RBF import *
+from RBFN import *
 from scipy import signal
 import numpy as np
 import matplotlib.pyplot as plt
@@ -23,10 +23,10 @@ def main():
     square_T_test = signal.square(2*X_test).reshape(-1, 1)
     
     # Create a RBF network
-    R = RBF()
+    R = RBFN()
 
     # train on the data
-    # takes 7 nodes to get an error below 0.01. vec_mu is created maually from lokking at the plots.
+    # takes 7 nodes to get an error below 0.01. vec_mu is created maually from looking at the plots.
     # to get error < 0.001 just take the number of pattern as nodes and pass the trainingdata as vec_mu.(or target)
     # the more nodes we add the lower the variance we can use.
     nodes = len(X_train)

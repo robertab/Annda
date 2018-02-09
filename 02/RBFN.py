@@ -1,7 +1,7 @@
 import numpy as np
 
 
-class RBF:
+class RBFN:
     def __init__(self):
         pass
 
@@ -13,6 +13,9 @@ class RBF:
         if learning_rule == 'least_squares':
             weights = self._least_squares(K, T)
             return K.dot(weights)
+
+        if learning_rule == 'delta':
+            pass
 
     def _least_squares(self, K, T):
         return np.dot(np.linalg.pinv(K), T)
