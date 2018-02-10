@@ -2,8 +2,8 @@ import numpy as np
 
 
 class RBFN:
-    def __init__(self):
-        self.eta = 0.1
+    def __init__(self, eta):
+        self.eta = eta
         self.weights = []
         self.vec_mu = []
         self.vec_sigmas = []
@@ -28,6 +28,7 @@ class RBFN:
         @self.weights - numpy array: The calculated weights for each
                                      basis function
         """
+        self.vec_errors = np.zeros((epochs,1))
         self.vec_sigmas = vec_sigma
         self.vec_mu = vec_mu
         self.weights = np.array(vec_mu).reshape(nodes, 1)
@@ -36,22 +37,25 @@ class RBFN:
         for epoch in range(epochs):
             if learning_rule == 'least_squares':
                 if batch:
-                    self._least_squares(K, T)
-                    return K.dot(self.weights)
+                    self._least_squares_batch(K, T)
+                    return 
                 else:
                     pass
             if learning_rule == 'delta':
                 if batch:
                     pass
                 else:
-                    self._delta(K, T)
+                    self._delta_sequential(K, T)
+                    Y = self.predict(X)
+                    self.vec_errors[epoch] = self.error(Y,T)
 
-    def _delta(self, K, T):
+
+    def _delta_sequential(self, K, T):
         for ki, ti in zip(K, T):
             ki = ki.reshape(-1, len(ki))
             self.weights += self.eta * (ti - np.dot(ki, self.weights)) * ki.T
 
-    def _least_squares(self, K, T):
+    def _least_squares_batch(self, K, T):
         self.weights = np.dot(np.linalg.pinv(K), T)
 
     def _kernel(self, X):

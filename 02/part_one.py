@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 
 
-def main():
+def main(eta):
     """
     Assignment - Part 1,
 
@@ -22,28 +22,47 @@ def main():
     sin_T_test = np.sin(2*X_test).reshape(-1, 1)
     square_T_test = signal.square(2*X_test).reshape(-1, 1)
     
-    # Create a RBF network
-    R = RBFN()
 
-    # train on the data
-    # takes 7 nodes to get an error below 0.01. vec_mu is created maually from looking at the plots.
-    # to get error < 0.001 just take the number of pattern as nodes and pass the trainingdata as vec_mu.(or target)
-    # the more nodes we add the lower the variance we can use.
-    nodes = 4
-    # learning_rule = 'least_squares'
+    nodes = 6
+#     learning_rule = 'least_squares'
     learning_rule = 'delta'    
     batch = False
-    vec_mu = [0.8, 2.2, 4, 5.5]
-    vec_sigma = [.5, .5, .5, .5]
-    R.train(X_train, sin_T_train, nodes, vec_mu, vec_sigma, learning_rule, batch, 200)
+    # mean of each basis function
+    vec_mu = [0, 0.9, 2.25, 3.9, 5.5, 6.2]
+    #variance of each basis function
+    vec_sigma = [.5] * nodes
+    epochs = 50
+#     eta = 0.01
+    # Create a RBF network
+    R = RBFN(eta)
+    # train the network
+    R.train(X_train, sin_T_train, nodes, vec_mu, vec_sigma, learning_rule, batch, epochs)
     print(R.weights)
     Y = R.predict(X_train)
     
+    # Use threshold for square(2x) function
     #Y = np.where(Y > 0, 1, -1)
-    # print(R.error(Y, square_T_train))
-   
-    plt.plot(X_train, sin_T_train)
-    plt.plot(X_train, Y)
+    
+    #print error
+    print(R.error(Y, sin_T_train))
+
+    fig = plt.figure()
+    ax = plt.subplot(111)
+    plt.title("learing rule: "+learning_rule + \
+                ". Eta="+str(R.eta) + ". Nodes="+str(nodes) + \
+                ". sigma="+str(vec_sigma[0])+\
+                ". Epochs="+str(epochs))
+    ax.plot(X_train, sin_T_train, label="true")
+    ax.plot(X_train, Y, label="model")
+    plt.legend()
+    plt.show()
+
+    fig = plt.figure()
+    ax = plt.subplot(111)
+    plt.title("error vs epoch. (sequential delta rule). Eta = "+str(R.eta))
+    ax.plot(R.vec_errors, label = "error")
+    plt.ylim((0,3))
+    plt.legend()
     plt.show()
     
 #     vec_mu = [0., .63, 2.35, 3.9, 5.5, 5.89, 6.2]
@@ -74,5 +93,5 @@ def main():
 #     plt.show()
 
 
-if __name__ == '__main__':
-    main()
+# if __name__ == '__main__':
+#     main()
