@@ -1,18 +1,18 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.utils import shuffle
+from sklearn.cluster import KMeans
 np.random.seed(100)
 
 class RBFN:
-    def __init__(self, eta):
-        self.eta = eta
+    def __init__(self):
         self.weights = []
         self.vec_mu = []
         self.vec_sigmas = []
         self.mat_K = []
         self.nodes = 0
 
-    def train(self, X, T, nodes, vec_mu, vec_sigma, learning_rule, batch, epochs):
+    def train(self, X, T, nodes, vec_sigma, learning_rule, batch, epochs, eta, strategy):
         """
         INPUT:
         @X - numpy array: representing the input data
@@ -30,15 +30,15 @@ class RBFN:
         @self.weights - numpy array: The calculated weights for each
                                      basis function
         """
+        self.eta = eta
+        self.nodes = nodes
         self.vec_errors = np.zeros((epochs,1))
         self.vec_sigmas = vec_sigma
-        self.vec_mu = vec_mu
-        self.weights = np.array(vec_mu).reshape(nodes, 1)
-        self.nodes = nodes
+        self.vec_mu = self.init_weights(X,strategy)
+        self.weights = np.array(self.vec_mu).reshape(nodes, 1)
+        K = self._kernel(X)
         for epoch in range(epochs):
-            K = self._kernel(X)
-#             K,T = shuffle(K,T)
-            print(self.weights)
+            K,T = shuffle(K,T)
             if learning_rule == 'least_squares':
                 if batch:
                     self._least_squares_batch(K, T)
@@ -52,7 +52,6 @@ class RBFN:
                     Y = self.predict(X)
                     self.vec_errors[epoch] = self.error(Y,T)
 
-
     def _delta_sequential(self, K, T):
         for ki, ti in zip(K, T):
             ki = ki.reshape(-1, len(ki))
@@ -64,14 +63,27 @@ class RBFN:
     def _kernel(self, X):
         K = np.zeros((len(X), self.nodes)).reshape(len(X), self.nodes)
         for node in range(self.nodes):
-            K[:, node] = (np.exp(-((X - self.weights[node])**2)/(2*self.vec_sigmas[node]**2))).reshape(len(X), )
-        for node in range(self.nodes):
-            K[:, node] = (np.exp(-((X - self.weights[node])**2)/(2*self.vec_sigmas[node]**2))).reshape(len(X), )
+            K[:, node] = (np.exp(-((X - self.vec_mu[node])**2)/(2*self.vec_sigmas[node]**2))).reshape(len(X), )
         return K
 
     def predict(self, data):
         K = self._kernel(data)
         return K.dot(self.weights)
+
+    def init_weights(self, data, strategy):
+        centers = []
+        if strategy == "random_init":
+            indices = list(range(len(data)))
+            np.random.shuffle(indices)
+            for i in range(self.nodes):
+                centers.append(data[indices[i]])
+        
+        elif strategy == "k_means":
+            kmeans = KMeans(n_clusters=self.nodes).fit(data)
+#             print(kmeans.cluster_centers_)
+            centers = kmeans.cluster_centers_
+
+        return centers
         
     def error(self, Y, T):
         return sum(np.absolute(Y - T)) / len(Y)
