@@ -1,5 +1,7 @@
 import numpy as np
-
+import matplotlib.pyplot as plt
+from sklearn.utils import shuffle
+np.random.seed(100)
 
 class RBFN:
     def __init__(self, eta):
@@ -33,12 +35,13 @@ class RBFN:
         self.vec_mu = vec_mu
         self.weights = np.array(vec_mu).reshape(nodes, 1)
         self.nodes = nodes
-        K = self._kernel(X)
         for epoch in range(epochs):
+            K = self._kernel(X)
+#             K,T = shuffle(K,T)
+            print(self.weights)
             if learning_rule == 'least_squares':
                 if batch:
                     self._least_squares_batch(K, T)
-                    return 
                 else:
                     pass
             if learning_rule == 'delta':
@@ -61,7 +64,9 @@ class RBFN:
     def _kernel(self, X):
         K = np.zeros((len(X), self.nodes)).reshape(len(X), self.nodes)
         for node in range(self.nodes):
-            K[:, node] = (np.exp(-((X - self.vec_mu[node])**2)/(2*self.vec_sigmas[node]**2))).reshape(len(X), )
+            K[:, node] = (np.exp(-((X - self.weights[node])**2)/(2*self.vec_sigmas[node]**2))).reshape(len(X), )
+        for node in range(self.nodes):
+            K[:, node] = (np.exp(-((X - self.weights[node])**2)/(2*self.vec_sigmas[node]**2))).reshape(len(X), )
         return K
 
     def predict(self, data):
