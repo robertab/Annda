@@ -63,7 +63,8 @@ class RBFN:
     def _kernel(self, X):
         K = np.zeros((len(X), self.nodes)).reshape(len(X), self.nodes)
         for node in range(self.nodes):
-            K[:, node] = (np.exp(-((X - self.vec_mu[node])**2)/(2*self.vec_sigmas[node]**2))).reshape(len(X), )
+            K[:, node] = (np.exp(-((X - self.vec_mu[node])**2) /
+                                 (2*self.vec_sigmas[node]**2))).reshape(len(X), )
         return K
 
     def predict(self, data):

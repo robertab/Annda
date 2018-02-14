@@ -24,35 +24,43 @@ def main():
     X_test = X_test + np.random.normal(0, 0.1, len(X_test)).reshape(-1,1)
     sin_T_test = np.sin(2*X_test).reshape(-1, 1)
     sin_T_test = sin_T_test  + np.random.normal(0, 0.1, len(sin_T_test)).reshape(-1,1)
-# 
-#     plt.plot(sin_T_train, c='g')
-#     plt.show()
-#     plt.plot(sin_T_test, c='y')
-#     plt.show()
+ 
 
-    NODES = list(range(10,20))
-    etas = np.arange(0,0.1,0.01)
-#     learning_rule = 'least_squares'
+    # NODES = list(range(10,20))
+    NODES = list(range(63, 64))
+    etas = np.arange(0,0.1,0.001)
+    etas = np.array([0.001, 0.01, 0.05, 0.1])
+    # learning_rule = 'least_squares'
     learning_rule = 'delta'    
     batch = False
-    strategy =  "k_means" #
+    strategy = "k_means" #
     #variance of each basis function
     epochs = 500
     # Create a RBF network
     R = RBFN()
     # train the network
-    mat_res = np.ones((len(NODES),len(etas)))
-    for i,nodes in enumerate(NODES):
-        for j,eta in enumerate(etas):
-            vec_sigma = [0.5] * nodes
-            R.train(X_train, sin_T_train, nodes, vec_sigma, 
-                    learning_rule, batch, 
-                    epochs, eta, strategy)
-            Y = R.predict(X_test)
-            mat_res[i,j] = R.error(Y,sin_T_test)
-    print(mat_res)
-    #print error
+    # mat_res = np.ones((len(NODES), len(etas)))
+    # for i, nodes in enumerate(NODES):
+    #     for j, eta in enumerate(etas):
+    #         vec_sigma = [0.7] * nodes
+    #         R.train(X_train, sin_T_train, nodes, vec_sigma,
+    #                 learning_rule, batch,
+    #                 epochs, eta, strategy)
+    #         Y = R.predict(X_test)
+    #         mat_res[i, j] = R.error(Y, sin_T_test)
+    # print(mat_res)
+    for eta in etas:
+        vec_sigma = [0.5] * 11        
+        R.train(X_train, sin_T_train, 11, vec_sigma, learning_rule, batch, epochs, eta, strategy)
+        fig = plt.figure()
+        ax = plt.subplot(111)
+        plt.title("error vs epoch. (sequential delta rule). Eta = "+str(eta))
+        ax.plot(R.vec_errors, label = "error")
+        plt.ylim((0,3))
+        plt.legend()
+        plt.show()
 
+    #print error
 #     fig = plt.figure()
 #     ax = plt.subplot(111)
 #     plt.title("learing rule: "+learning_rule + \
