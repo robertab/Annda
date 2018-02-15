@@ -14,14 +14,14 @@ def main():
     """
     # Training data
     X_train = np.arange(0, 2*np.pi, 0.1).reshape(-1, 1)
-    X_train = X_train + np.random.normal(0, 0.1,
-                                         len(X_train)).reshape(-1, 1)
+#     X_train = X_train + np.random.normal(0, 0.1,
+#                                          len(X_train)).reshape(-1, 1)
     sin_T_train = np.sin(2*X_train).reshape(-1, 1)
     sin_T_train = sin_T_train + \
                   np.random.normal(0, 0.1, len(sin_T_train)).reshape(-1, 1)
 #     # Test dat
     X_test = np.arange(0.05, 2*np.pi, 0.1).reshape(-1, 1)
-    X_test = X_test + np.random.normal(0, 0.1, len(X_test)).reshape(-1, 1)
+#     X_test = X_test + np.random.normal(0, 0.1, len(X_test)).reshape(-1, 1)
     sin_T_test = np.sin(2*X_test).reshape(-1, 1)
     sin_T_test = sin_T_test + np.random.normal(0, 0.1,
                                                len(sin_T_test)).reshape(-1, 1)
@@ -50,19 +50,19 @@ def main():
             Y = R.predict(X_train)
             mat_res[i, j] = R.error(Y, sin_T_train)
     print(mat_res)
-    # for eta in etas:
-    #     vec_sigma = [0.5] * 11
-    #     R.train(X_train, sin_T_train,
-    #             11, vec_sigma, learning_rule,
-    #             batch, epochs, eta, strategy)
+    for eta in etas:
+        vec_sigma = [0.5] * 11
+        R.train(X_train, sin_T_train,
+                11, vec_sigma, learning_rule,
+                batch, epochs, eta, strategy)
 
-    #     # fig = plt.figure()
-    #     ax = plt.subplot(111)
-    #     plt.title("error vs epoch. (sequential delta rule). Eta = "+str(eta))
-    #     ax.plot(R.vec_errors, label="error")
-    #     plt.ylim((0, 3))
-    #     plt.legend()
-    #     plt.show()
+        # fig = plt.figure()
+        ax = plt.subplot(111)
+        plt.title("error vs epoch. (sequential delta rule). Eta = "+str(eta))
+        ax.plot(R.vec_errors, label="error")
+        plt.ylim((0, 3))
+        plt.legend()
+        plt.show()
 
 
 if __name__ == '__main__':

@@ -12,7 +12,7 @@ class RBFN:
         self.mat_K = []
         self.nodes = 0
 
-    def train(self, X, T, nodes, vec_sigma, learning_rule, batch, epochs, eta, strategy):
+    def train(self, X, T, nodes, vec_sigma, learning_rule, batch, epochs, eta, strategy, normalize = False):
         """
         INPUT:
         @X - numpy array: representing the input data
@@ -36,7 +36,7 @@ class RBFN:
         self.vec_sigmas = vec_sigma
         self.vec_mu = self.init_weights(X,strategy)
         self.weights = np.array(self.vec_mu).reshape(nodes, 1)
-        K = self._kernel(X)
+        K = self._kernel(X, normalize)
         for epoch in range(epochs):
             K,T = shuffle(K,T)
             if learning_rule == 'least_squares':
@@ -52,6 +52,7 @@ class RBFN:
                     Y = self.predict(X)
                     self.vec_errors[epoch] = self.error(Y,T)
 
+
     def _delta_sequential(self, K, T):
         for ki, ti in zip(K, T):
             ki = ki.reshape(-1, len(ki))
@@ -60,29 +61,54 @@ class RBFN:
     def _least_squares_batch(self, K, T):
         self.weights = np.dot(np.linalg.pinv(K), T)
 
-    def _kernel(self, X):
+    def _kernel(self, X, normalize=False):
         K = np.zeros((len(X), self.nodes)).reshape(len(X), self.nodes)
         for node in range(self.nodes):
             K[:, node] = (np.exp(-((X - self.vec_mu[node])**2) /
-                                 (2*self.vec_sigmas[node]**2))).reshape(len(X), )
+                             (2*self.vec_sigmas[node]**2))).reshape(len(X), )
+        if normalize:
+            normalizers = np.sqrt(np.sum(K**2,axis=1))
+            print(normalizers.shape)
+            print(K.shape)
+            K = np.transpose(np.transpose(K)/normalizers)
+            print(K.shape)
         return K
 
     def predict(self, data):
         K = self._kernel(data)
         return K.dot(self.weights)
 
-    def init_weights(self, data, strategy):
+    def init_weights(self, X, strategy):
         centers = []
         if strategy == "random_init":
-            indices = list(range(len(data)))
+            indices = list(range(len(X)))
             np.random.shuffle(indices)
             for i in range(self.nodes):
-                centers.append(data[indices[i]])
+                centers.append(X[indices[i]])
         
         elif strategy == "k_means":
-            kmeans = KMeans(n_clusters=self.nodes).fit(data)
+            kmeans = KMeans(n_clusters=self.nodes).fit(X)
 #             print(kmeans.cluster_centers_)
             centers = kmeans.cluster_centers_
+            
+        elif strategy == "competitive":
+            indices = list(range(len(X)))
+            np.random.shuffle(indices)
+            for i in range(self.nodes):
+                centers.append(X[indices[i]])
+            centers = np.array(centers)
+            centers /= centers.sum(axis=0)
+            dist = []
+            print(centers)
+            print()
+            for x in X:
+                for c in centers:
+                    dist.append(np.sqrt((x-c)**2)[0])
+                min_index = np.argmin(dist)
+                centers[min_index] = (x - centers[min_index])
+                dist = []
+            print(centers)
+#                 print(min_dist)
 
         return centers
         
