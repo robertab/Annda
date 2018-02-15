@@ -97,7 +97,6 @@ class RBFN:
             for i in range(self.nodes):
                 centers.append(X[indices[i]])
             centers = np.array(centers)
-            centers /= centers.sum(axis=0)
             dist = []
             print(centers)
             print()
