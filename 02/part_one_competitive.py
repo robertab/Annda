@@ -1,6 +1,7 @@
 from RBFN import RBFN
 from math import ceil, floor
 import matplotlib.pyplot as plt
+plt.style.use('ggplot')
 import numpy as np
 
 X_train = np.arange(0, 2*np.pi, 0.1).reshape(-1, 1)
@@ -22,7 +23,7 @@ nodes = 11
 
 # Parameter settings for RBFN
 learning_rule = 'delta'
-batch = True
+batch = False
 epochs = 1500
 eta = 0.01
 strategy = 'competitive'
@@ -34,4 +35,8 @@ R.train(X_train, sin_T_train, nodes, vec_sigma,
         learning_rule, batch,
         epochs, eta, strategy, normalize)
 
-
+Y = R.predict(X_train)
+print(R.error(Y,sin_T_train))
+plt.plot(np.arange(0,2*np.pi, 0.1), Y)
+plt.plot(np.arange(0,2*np.pi, 0.1), sin_T_train)
+plt.show()

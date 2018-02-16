@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+plt.style.use('ggplot')
 from sklearn.utils import shuffle
 from sklearn.cluster import KMeans
 np.random.seed(100)
@@ -78,6 +79,17 @@ class RBFN:
         K = self._kernel(data)
         return K.dot(self.weights)
 
+#     def update_centers(self, min_index, centers, x):
+#         # update the winner
+#         centers[min_index] += alpha * (x - centers[min_index])
+#         # how many units will get updated
+#         neighbourhood = 1
+#         for i in range(neighbourhood)
+#         return centers
+# 
+#     def h(self, centers):
+
+
     def init_weights(self, X, strategy):
         centers = []
         if strategy == "random_init":
@@ -92,24 +104,43 @@ class RBFN:
             centers = kmeans.cluster_centers_
             
         elif strategy == "competitive":
-            indices = list(range(len(X)))
-            np.random.shuffle(indices)
-            for i in range(self.nodes):
-                centers.append(X[indices[i]])
-            centers = np.array(centers)
-            dist = []
-            print(centers)
-            print()
-            for x in X:
-                for c in centers:
-                    dist.append(np.sqrt((x-c)**2)[0])
-                min_index = np.argmin(dist)
-                centers[min_index] = (x - centers[min_index])
-                dist = []
-            print(centers)
-#                 print(min_dist)
+#             indices = list(range(len(X)))
+#             np.random.shuffle(indices)
+#             for i in range(self.nodes):
+#                 centers.append(X[indices[i]][0])
 
-        return centers
+            # random init weights
+            centers = np.random.normal(0,1,self.nodes)
+            old_centers = np.copy(centers)
+            #normalize weights
+            centers = centers / np.linalg.norm(centers)
+            print(centers)
+            alpha = 0.2
+            dist = []
+            for i in range(100):
+                for x in X:
+                    for c in centers:
+                        dist.append(np.sqrt((x-c)**2))
+                    dc = dist
+                    min_index = np.argmin(dist)
+                    centers[min_index] += alpha * (x - centers[min_index])
+                    # leaky learning
+                    for n in range(1):
+                        dc.pop(min_index)
+                        min_2_index = np.argmin(dc)
+                        centers[min_2_index] += alpha * (x - centers[min_2_index])
+                        min_index = min_2_index
+#                     centers = self.update_centers(min_index,centers,x)
+#                     centers = centers / np.linalg.norm(centers)
+                    dist = []
+            plt.plot(old_centers, 'b+', label='start_centers')
+            plt.plot(centers, 'r+', label='new_centers')
+            plt.legend()
+            plt.show()
+
+            print(old_centers)
+        print(centers) 
+        return centers 
         
     def error(self, Y, T):
         return sum(np.absolute(Y - T)) / len(Y)
