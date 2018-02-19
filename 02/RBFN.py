@@ -13,7 +13,7 @@ class RBFN:
         self.mat_K = []
         self.nodes = 0
 
-    def train(self, X, T, nodes, vec_sigma, learning_rule, batch, epochs, eta, strategy, normalize = False):
+    def train(self, X, T, nodes, vec_sigma, learning_rule, batch, epochs, eta, strategy=None, normalize = False):
         """
         INPUT:
         @X - numpy array: representing the input data
@@ -92,6 +92,11 @@ class RBFN:
 
     def init_weights(self, X, strategy):
         centers = []
+        if strategy == None:
+            centers = [0, 0.9, 2.25, 3.9, 5.5, 6.2]
+            plt.plot(centers, 'r+', label='centers')
+            plt.legend()
+            plt.show()
         if strategy == "random_init":
             indices = list(range(len(X)))
             np.random.shuffle(indices)
@@ -104,34 +109,32 @@ class RBFN:
             centers = kmeans.cluster_centers_
             
         elif strategy == "competitive":
-#             indices = list(range(len(X)))
-#             np.random.shuffle(indices)
-#             for i in range(self.nodes):
-#                 centers.append(X[indices[i]][0])
-
             # random init weights
             centers = np.random.normal(0,1,self.nodes)
-            old_centers = np.copy(centers)
             #normalize weights
-            centers = centers / np.linalg.norm(centers)
+            centers = np.transpose(np.transpose(centers) / np.linalg.norm(centers))
+            old_centers = np.copy(centers)
             print(centers)
             alpha = 0.2
             dist = []
             for i in range(100):
-                for x in X:
+                for j in range(len(X)):
+                    vec_x = X[np.random.randint(0,len(X)),:]
                     for c in centers:
-                        dist.append(np.sqrt((x-c)**2))
+                        dist.append(np.sqrt((vec_x[0]-c)**2))
                     dc = dist
                     min_index = np.argmin(dist)
-                    centers[min_index] += alpha * (x - centers[min_index])
+                    centers[min_index] += alpha * (vec_x[0] - centers[min_index])
                     # leaky learning
-                    for n in range(1):
-                        dc.pop(min_index)
+                    # if we use many nodes. it can be good to add leakage?? 
+                    for n in range(4):
+                        dc[min_index] = 9999999
+#                         dc.pop(min_index)
                         min_2_index = np.argmin(dc)
-                        centers[min_2_index] += alpha * (x - centers[min_2_index])
+                        centers[min_2_index] += alpha * (vec_x - centers[min_2_index])
                         min_index = min_2_index
 #                     centers = self.update_centers(min_index,centers,x)
-#                     centers = centers / np.linalg.norm(centers)
+#                     centers = np.transpose(np.transpose(centers) / np.linalg.norm(centers))
                     dist = []
             plt.plot(old_centers, 'b+', label='start_centers')
             plt.plot(centers, 'r+', label='new_centers')

@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 
 
-def main(eta):
+def main():
     """
     Assignment - Part 1,
 
@@ -31,8 +31,8 @@ def main(eta):
     vec_mu = [0, 0.9, 2.25, 3.9, 5.5, 6.2]
     #variance of each basis function
     vec_sigma = [.5] * nodes
-    epochs = 50
-#     eta = 0.01
+    epochs = 500
+    eta = 0.04
     # Create a RBF network
     R = RBFN(eta)
     # train the network
@@ -93,5 +93,5 @@ def main(eta):
 #     plt.show()
 
 
-# if __name__ == '__main__':
-#     main()
+if __name__ == '__main__':
+    main()

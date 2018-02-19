@@ -63,6 +63,18 @@ def main():
         plt.ylim((0, 3))
         plt.legend()
         plt.show()
+#     eta = 0.01
+#     nodes = 6
+#     vec_sigma = [0.5]*6
+#     R.train(X_train, sin_T_train, nodes, vec_sigma,
+#              learning_rule, batch,
+#              epochs, eta, strategy)
+#     Y = R.predict(X_train)
+#     print(R.error(Y, sin_T_train))
+#     plt.plot(Y)
+#     plt.plot(sin_T_train)
+#     plt.show()
+
 
 
 if __name__ == '__main__':
