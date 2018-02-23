@@ -31,8 +31,11 @@ def getResult(organizedMap):
 
     # copy list
     animals_sorted = animals[:]
+#     print(organizedMap)
 
     sorted_indices = np.argsort(organizedMap)
+
+#     print(sorted_indices)
     for i in range(len(animals)):
         animals_sorted[i] = animals[sorted_indices[i]]
     return animals_sorted

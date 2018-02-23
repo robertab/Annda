@@ -13,6 +13,7 @@ class SOM:
         for node in range(0,self.nrOutputNodes):
             differences = np.subtract(sample, np.copy(self.weights[node]))
             # calculate lengt of the difference (skipp sqr as it is relative)
+#             print(differences.shape)
             distances[node] = np.dot(differences.T, differences)
         # index of winnder node (node closest to the input)
         winnerNode = distances.argmin()
