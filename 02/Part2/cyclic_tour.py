@@ -69,7 +69,9 @@ for epoch in range(0,epochs):
         tour[i][0] = selfOrgMap.weights[int(organizedMap[i]),0]
         tour[i][1] = selfOrgMap.weights[int(organizedMap[i]),1]
         i += 1
-    print(tour[:,0])
+#     print(tour[:,0])
+    print(tour)
+    print(selfOrgMap.weights)
     plotTraining(city_coord)
     plt.plot([selfOrgMap.weights[:,0]], [selfOrgMap.weights[:,1]], 'bo')
     plt.plot(selfOrgMap.weights[:,0], selfOrgMap.weights[:,1])
