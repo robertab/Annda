@@ -66,7 +66,8 @@ class RBFN:
         K = np.zeros((len(X), self.nodes)).reshape(len(X), self.nodes)
         for node in range(self.nodes):
             for point in range(len(X)):
-                K[point,node] = np.exp((-(np.linalg.norm(X[point, :]-self.vec_mu[node, :]))**2) / (2*(0.2**2)))
+                K[point,node] = np.exp((-(np.linalg.norm(X[point, :]-self.vec_mu[node, :]))**2) \
+                        / (2*(self.vec_sigmas[0]**2)))
         return K
         # if normalize:
         #     normalizers = np.sqrt(np.sum(K**2,axis=1))
@@ -76,16 +77,6 @@ class RBFN:
     def predict(self, data):
         K = self._kernel(data)
         return K.dot(self.weights)
-
-#     def update_centers(self, min_index, centers, x):
-#         # update the winner
-#         centers[min_index] += alpha * (x - centers[min_index])
-#         # how many units will get updated
-#         neighbourhood = 1
-#         for i in range(neighbourhood)
-#         return centers
-# 
-#     def h(self, centers):
 
 
     def init_weights(self, X, strategy):
@@ -123,9 +114,9 @@ class RBFN:
                     dc = dist
                     min_index = np.argmin(dist, axis=0)
                     centers[min_index] += alpha * (vec_x[0] - centers[min_index])
-                    # leaky learning
-                    # if we use many nodes. it can be good to add leakage?? 
-                    for n in range(4):
+                    # leaky learning - multiple winners
+                    multiple_winners = 0
+                    for n in range(multiple_winners):
                         dc[min_index[0]][0] = 9999999
                         dc[min_index[1]][1] = 9999999
 #                         dc.pop(min_index)
@@ -135,10 +126,16 @@ class RBFN:
 #                     centers = self.update_centers(min_index,centers,x)
 #                     centers = np.transpose(np.transpose(centers) / np.linalg.norm(centers))
                     dist = []
-            plt.plot(old_centers, 'b+', label='start_centers')
-            plt.plot(centers, 'r+', label='new_centers')
-            plt.legend()
-            plt.show()
+            #plot the weight change
+#             plt.plot(old_centers[:,0], 'b+', label='start_centers_col0')
+#             plt.plot(centers[:,0], 'r+', label='new_centers_col0')
+#             plt.legend()
+#             plt.show()
+#             plt.plot(old_centers[:,1], 'g+', label='start_centers_col1')
+#             plt.plot(centers[:,1], 'y+', label='new_centers_col1')
+#             plt.legend()
+#             plt.show()
+        print(centers)
 
         return centers 
         

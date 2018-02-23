@@ -13,6 +13,7 @@ class SOM:
         for node in range(0,self.nrOutputNodes):
             differences = np.subtract(sample, np.copy(self.weights[node]))
             # calculate lengt of the difference (skipp sqr as it is relative)
+#             print(differences.shape)
             distances[node] = np.dot(differences.T, differences)
         # index of winnder node (node closest to the input)
         winnerNode = distances.argmin()
@@ -44,19 +45,12 @@ class SOM:
         pos = np.zeros(nrWinners)  # winners
         count = 0
         for sample in self.data[:]:
-            #print("run: sample " + str(sample))
             winnerNode = self.findMostSimularNode(sample)
-            #print("winnerNode: " + str(winnerNode))
             pos[count] = winnerNode
             count = count + 1
             if circular:
-                #print("weights: ")
-                #print(self.weights)
                 self.updateWeightsCircular(sample, winnerNode, neighbourhood)
-
-                #print(self.weights)
             else:
                 self.updateWeights(sample, winnerNode, neighbourhood)
-            #print(" ")
 
         return pos
