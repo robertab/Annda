@@ -35,24 +35,14 @@ def main():
     p10_slice = (X[0, :64]*(-1)).reshape(1, -1)
     p10 = np.append(p10_slice, X[0, 64:]).reshape(1, -1)
     p11 = np.concatenate((X[1, :512], X[2, 512:]), axis=0).reshape(1, -1)
-    degraded_pattern = np.concatenate((p10, p11), axis=0)
+#     degraded_pattern = np.concatenate((p10, p11), axis=0)
     # print(p10.shape, p11.shape)
-    output = Network.recall(degraded_pattern, 100, False)
-    print(degraded_pattern)
-    print(output)
-    print(np.sum(np.abs(output - degraded_pattern)))
-    """
-    Draw the pixels
-    """
-    old_grid = p10.reshape(32, 32)
-    new_grid = output[0, :].reshape(32, 32)
-    plt.imshow(old_grid, extent=(0, 32, 0, 32),
-               interpolation='nearest', cmap=plt.cm.get_cmap('binary'), aspect="auto")
-    plt.show()
-    plt.imshow(new_grid, extent=(0, 32, 0, 32),
-               interpolation='nearest', cmap=plt.cm.get_cmap('binary'), aspect="auto")
-    plt.show()
-
+    output = Network.recall(p11, 200, False)
+#     print(degraded_pattern.shape)
+    print(output.shape)
+    print(X[0].shape)
+    print(np.sum(np.abs(output - X[2])))
+   
     # data[16, 16] = [254, 0, 0]       # Makes the middle pixel red
     # data[16, 17] = [0, 0, 255]       # Makes the next pixel blue
 
