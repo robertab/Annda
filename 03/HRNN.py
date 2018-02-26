@@ -24,7 +24,7 @@ class HRNN:
 #                     if self.random:
 #                     np.random.shuffle(order) 
                     for j in order:
-                        if np.sum(self.weights[j,:] * self.activations[i,j])>=0:
+                        if np.sum(self.weights[j,:] * self.activations[i])>=0:
                             self.activations[i,j] = 1
                         else:
                             self.activations[i,j] = -1
