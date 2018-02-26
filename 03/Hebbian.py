@@ -5,14 +5,29 @@ class Hebbian:
     def __init__(self, nrNodes, samples):
         self.nrSamples = len(samples)
         self.weights = np.zeros((nrNodes, nrNodes))
-
-        # init samples to matrix for matrix operations
-        self.samples = np.zeros((self.nrSamples, nrNodes, nrNodes))
-        for i in range(self.nrSamples):
-            for j in range(nrNodes):
-                sample = np.array(samples[i])
-                self.samples[i,j] = sample
+        self.nrNodes = nrNodes
+        self.samples = np.array(samples)
 
     def train(self):
         for i in range(self.nrSamples):
-            self.weights = self.weights + self.samples[i] * self.samples[i].T
+            sample = self.samples[i].reshape(self.nrNodes,1)
+            self.weights = self.weights + sample * sample.T
+            # print("weights")
+            # print(self.weights)
+
+        # set diagonal to 0, no unit has a connection with itself
+        for i in range(self.nrNodes):
+            self.weights[i,i] = 0
+
+
+# x1=[-1,-1,1,-1,1,-1,-1,1]
+# x2=[-1,-1,-1,-1,-1,1,-1,-1]
+# x3=[-1,1,1,-1,-1,1,-1,1]
+# samples = []
+# samples.append(x1)
+# samples.append(x2)
+# samples.append(x3)
+# nrNodes = 8
+# hebb = Hebbian(nrNodes, samples)
+# hebb.train()
+# print(hebb.weights)
