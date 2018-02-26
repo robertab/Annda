@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib.pyplot as plt
 from HRNN import HRNN
 
 FILENAME = "pict.dat"
@@ -36,8 +37,25 @@ def main():
     p11 = np.concatenate((X[1, :512], X[2, 512:]), axis=0).reshape(1, -1)
     degraded_pattern = np.concatenate((p10, p11), axis=0)
     # print(p10.shape, p11.shape)
-    output = Network.recall(degraded_pattern)
-    print(np.sum(np.abs(output - degraded_pattern)))
+    output = Network.recall(degraded_pattern, 1, False)
+    # print(np.sum(np.abs(output - degraded_pattern)))
+    """
+    Draw the pixels
+    """
+    old_grid = p10.reshape(32, 32)
+    new_grid = output[0, :].reshape(32, 32)
+    plt.imshow(old_grid, extent=(0, 32, 0, 32),
+               interpolation='nearest', cmap=plt.cm.get_cmap('binary'), aspect="auto")
+    plt.show()
+    plt.imshow(new_grid, extent=(0, 32, 0, 32),
+               interpolation='nearest', cmap=plt.cm.get_cmap('binary'), aspect="auto")
+    plt.show()
+
+    # data[16, 16] = [254, 0, 0]       # Makes the middle pixel red
+    # data[16, 17] = [0, 0, 255]       # Makes the next pixel blue
+
+    # img = Image.fromarray(data)       # Create a PIL image
+    # img.show()
 
 
 if __name__ == '__main__':

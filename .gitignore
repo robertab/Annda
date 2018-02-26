@@ -1,2 +1,5 @@
 *.png
 *.pdf
+*.*.swp
+__pycache__/*
+__pycache__/
