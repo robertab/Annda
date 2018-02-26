@@ -9,15 +9,16 @@ class Hebbian:
         self.samples = np.array(samples)
 
     def train(self):
-        for i in range(self.nrSamples):
-            sample = self.samples[i].reshape(self.nrNodes,1)
-            self.weights = self.weights + sample * sample.T
+        # for i in range(self.nrSamples):
+        #     sample = self.samples[i].reshape(self.nrNodes,1)
+        #     self.weights = self.weights + sample * sample.T
+        self.weights = np.dot(self.samples.T, self.samples)
             # print("weights")
             # print(self.weights)
 
         # set diagonal to 0, no unit has a connection with itself
-        for i in range(self.nrNodes):
-            self.weights[i,i] = 0
+        # for i in range(self.nrNodes):
+        #     self.weights[i,i] = 0
 
 
 # x1=[-1,-1,1,-1,1,-1,-1,1]
