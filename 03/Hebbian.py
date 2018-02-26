@@ -10,7 +10,7 @@ class Hebbian:
 
     def train(self):
         self.weights = np.dot(self.samples.T, self.samples)
-        
+
         # set diagonal to 0, no unit has a connection with itself
         # for i in range(self.nrNodes):
         #     self.weights[i,i] = 0
