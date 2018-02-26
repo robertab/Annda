@@ -37,8 +37,10 @@ def main():
     p11 = np.concatenate((X[1, :512], X[2, 512:]), axis=0).reshape(1, -1)
     degraded_pattern = np.concatenate((p10, p11), axis=0)
     # print(p10.shape, p11.shape)
-    output = Network.recall(degraded_pattern, 1, False)
-    # print(np.sum(np.abs(output - degraded_pattern)))
+    output = Network.recall(degraded_pattern, 100, False)
+    print(degraded_pattern)
+    print(output)
+    print(np.sum(np.abs(output - degraded_pattern)))
     """
     Draw the pixels
     """

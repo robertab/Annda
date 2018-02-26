@@ -1,6 +1,5 @@
 import numpy as np
 
-
 class HRNN:
     def __init__(self, X):
         self.X = X
@@ -14,10 +13,12 @@ class HRNN:
             for epoch in range(epochs):
                 for i,activation in enumerate(self.activations):
                     self.activations[i,:] = np.where(activation.dot(self.weights) >= 0, 1, -1)
+            print(self.activations.shape)
             return self.activations
         
         else:
-            order = np.arange(self.nneurons) 
+            order = np.arange(len(patterns)) 
+            print(order)
             for epoch in range(epochs):
                 for i,activation in enumerate(self.activations):
 #                     if self.random:
@@ -26,6 +27,7 @@ class HRNN:
                         if np.sum(self.weights[j,:] * self.activations[i])>=0:
                             self.activations[j] = 1
                         else:
-                            self.activations[i] = -1
+                            self.activations[j] = -1
+            print(self.activations.shape)
             return self.activations
 
