@@ -119,8 +119,33 @@ def q2():
             counter.append(1)
 
     print(len(activations))
+
+    totCount = 0
+
     for i in range(len(activations)):
         print(counter[i])
+        totCount += counter[i]
         print(activations[i])
+    print(totCount)
 
-q2()
+def q3():
+    x1=[-1,-1,1,-1,1,-1,-1,1]
+    x2=[-1,-1,-1,-1,-1,1,-1,-1]
+    x3=[-1,1,1,-1,-1,1,-1,1]
+
+    samples = []
+    samples.append(x1)
+    samples.append(x2)
+    samples.append(x3)
+    nrNodes = 8
+    hop = Hopfield(nrNodes, samples)
+    hop.train()
+    nrOfUpdates = 5
+    x1d =[1,1,-1,1,-1,1,1,1] 
+    x2d =[1,1,1,1,1,-1,-1,-1]
+    x3d =[1,-1,-1,1,1,1,-1,1]
+    print(hop.recall(x1d, nrOfUpdates))
+    print(hop.recall(x2d, nrOfUpdates))
+    print(hop.recall(x3d, nrOfUpdates))
+
+q3()
