@@ -17,7 +17,7 @@ class HRNN:
         new_grid = output.reshape(32, 32)
         plt.imshow(new_grid, extent=(0, 32, 0, 32),
                    interpolation='nearest', cmap=plt.cm.get_cmap('binary'), aspect="auto")
-        plt.show()
+        # plt.show()
 
 
     def recall(self, patterns, epochs, synch=False):
