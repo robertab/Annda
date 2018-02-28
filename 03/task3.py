@@ -16,11 +16,11 @@ def read_data(filename):
     return data
 
 def energy(W, x, nrUnits=1024):
-    energy = 0
-    for i in range(nrUnits):
-        for j in range(nrUnits):
-            energy += W[i,j] * x[i] * x[j]
-    return -energy
+    # energy = 0
+    # for i in range(nrUnits):
+    #     for j in range(nrUnits):
+    #         energy += W[i,j] * x[i] * x[j]
+    return - x.dot(W.dot(x.T))
 
 
 def main():
@@ -34,14 +34,17 @@ def main():
 
     ener =[]
     mu = 1
-    sigma = 3
-    ranW = np.random.normal(mu, sigma, (1024,1024))
-    print(ranW)
-    Network.weights = ranW
-    for i in range(0,41):
-        activation = Network.recall(p11 , 200, synch=False)
+    sigma = 4
+    randomW = np.random.normal(mu, sigma, (1024,1024))
+    # set diagonal to 0, no unit has a connection with itself
+    for i in range(1024):
+        randomW[i,i] = 0
+    Network.weights = randomW
+    activation = np.zeros(1024)
+    for i in range(0,100):
+        activation = Network.recall(activation , 1, synch=False)
         #print(energy(Network.weights, activation[0]))
-        ener.append(energy(Network.weights, activation[0]))
+        ener.append(energy(Network.weights, activation))
         #print(i)
 
     print(ener)
@@ -49,13 +52,14 @@ def main():
     plt.show()
 
     ener =[]
-    Network.weights = 0.5 * (ranW.T * ranW)
+    Network.weights = 0.5 * (randomW * randomW.T)
+    activation = np.zeros(1024)
     print("ener")
     print(ener)
-    for i in range(0,41):
-        activation = Network.recall(p11 , 200, synch=False)
+    for i in range(0,100):
+        activation = Network.recall(activation , 1, synch=False)
         #print(energy(Network.weights, activation[0]))
-        ener.append(energy(Network.weights, activation[0]))
+        ener.append(energy(Network.weights, activation))
         #print(i)
 
     print(ener)
