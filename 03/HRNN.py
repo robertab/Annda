@@ -31,25 +31,20 @@ class HRNN:
 
         else:
             # bra seq update från boken
-#             order = np.arange(len(patterns[0]))
-#             print(order)
-#             for epoch in range(epochs):
-#                 for i in range(len(self.activations)):
-# #                     if self.random:
-# #                     np.random.shuffle(order)
-#                     for j in order:
-# #                         if (i % 100 == 0):
-# #                             self.plotter()
-#                         if np.sum(self.weights[j,:] * self.activations[i])>=0:
-#                             self.activations[i,j] = 1
-#                         else:
-#                             self.activations[i,j] = -1
-#             print(self.activations.shape)
-#             return self.activations
+            # order = np.arange(len(patterns[0]))
+            # print(order)
+            # for epoch in range(epochs):
+            #     for i in range(len(self.activations)):
+            #         for j in order:
+            #             if np.sum(self.weights[j,:] * self.activations[i])>=0:
+            #                 self.activations[i,j] = 1
+            #             else:
+            #                 self.activations[i,j] = -1
+            # print(self.activations.shape)
+            # return self.activations
 
-            # trött seq efter uppgiften
-            order = np.arange(len(patterns[0]))
-            print(order)
+            # trött seq efter lab pm'et
+
             for epoch in range(epochs):
                 for i in range(len(self.activations)):
                     rand = randint(0,1023)
@@ -57,5 +52,4 @@ class HRNN:
                         self.activations[i,rand] = 1
                     else:
                         self.activations[i,rand] = -1
-            print(self.activations.shape)
             return self.activations

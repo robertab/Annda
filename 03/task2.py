@@ -74,9 +74,10 @@ def main():
     #     activation = Network.recall(p10, 300, synch=False)
     #     Network.plotter(activation)
 
+    Network.plotter(X[2])
     Network.plotter(p11)
-    for i in range(0,12):
-        activation = Network.recall(p11, 1000, synch=False)
+    for i in range(0,6):
+        activation = Network.recall(p11, 2, synch=False)
         Network.plotter(activation)
 
     print(np.sum(np.abs(activation - X[1])))
@@ -85,31 +86,6 @@ def main():
     """
     end: What happens if we select units randomly?
     """
-
-
-
-
-
-#     degraded_pattern = np.concatenate((p10, p11), axis=0)
-    # print(p10.shape, p11.shape)
-    #
-    #
-    #
-    #
-    # output = Network.recall(p11, 200, False)
-#     print(degraded_pattern.shape)
-#
-#
-    # print(output.shape)
-    # print(X[0].shape)
-    # print(np.sum(np.abs(output - X[2])))
-    #
-    # data[16, 16] = [254, 0, 0]       # Makes the middle pixel red
-    # data[16, 17] = [0, 0, 255]       # Makes the next pixel blue
-
-    # img = Image.fromarray(data)       # Create a PIL image
-    # img.show()
-
 
 if __name__ == '__main__':
     main()

@@ -1,5 +1,8 @@
 import numpy as np
 from Hopfield import *
+import itertools
+import matplotlib.pyplot as plt
+
 
 def Q1():
     x1=[-1,-1,1,-1,1,-1,-1,1]
@@ -141,11 +144,77 @@ def q3():
     hop = Hopfield(nrNodes, samples)
     hop.train()
     nrOfUpdates = 5
-    x1d =[1,1,-1,1,-1,1,1,1] 
+    x1d =[1,1,-1,1,-1,1,1,1]
     x2d =[1,1,1,1,1,-1,-1,-1]
     x3d =[1,-1,-1,1,1,1,-1,1]
     print(hop.recall(x1d, nrOfUpdates))
     print(hop.recall(x2d, nrOfUpdates))
     print(hop.recall(x3d, nrOfUpdates))
 
-q3()
+def energy(W, x):
+    return W * x * x.T
+
+
+def energyPlot():
+
+    x1=[-1,-1,1,-1,1,-1,-1,1]
+    x2=[-1,-1,-1,-1,-1,1,-1,-1]
+    x3=[-1,1,1,-1,-1,1,-1,1]
+
+    samples = []
+    samples.append(x1)
+    samples.append(x2)
+    samples.append(x3)
+    nrNodes = 8
+    hop = Hopfield(nrNodes, samples)
+    hop.train()
+    count = 0
+
+    # create all possible patterns
+    lst = list(map(list, itertools.product([-1, 1], repeat=8)))
+    #print(lst)
+    count = 0
+    activations = np.array(lst)
+    energy = np.zeros(256)
+    W = hop.learningRule.weights
+    print(energy)
+    for i, x in enumerate(activations):
+        x = x.reshape(8,1)
+
+        #energy[i] = np.sum(W.dot(x))
+        Wx =W.dot(x)
+        energy[i] = Wx.T.dot(x).reshape(1)
+
+    print(energy)
+
+    for k, x in enumerate(activations):
+        x = x.reshape(8,1)
+
+        summ = 0
+        for i in range(8):
+            for j in range(8):
+                summ += W[i,j] + x[i] + x[j]
+        energy[k] = -summ
+
+    print(energy)
+    print(energy[251])
+    #   32 16 8 4 2 1   41
+    # 0 0 1 0 1 0 0 1
+    # x1=[-1,-1,1,-1,1,-1,-1,1]
+    #
+    #                     4
+    # x2=[-1,-1,-1,-1,-1,1,-1,-1]
+    #
+    #        64    32       4    1          101
+    # x3=[-1,1,1,-1,-1,1,-1,1]
+
+    plt.plot(energy)
+    plt.plot(41, 'r')
+    plt.show()
+
+
+
+
+
+
+energyPlot()
