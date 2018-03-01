@@ -8,8 +8,8 @@ class HRNN2:
         self.nPatterns = len(X)
         self.nNeurons = len(X[0])
         p = np.sum(X)
-        p =  p / (self.nNeurons * self.nPatterns )
-        X = X - p
+        self.p =  p / (self.nNeurons * self.nPatterns)
+        X = X - self.p
         self.weights = X.T.dot(X)
         for i in range(self.nNeurons):
             self.weights[i,i] = 0
