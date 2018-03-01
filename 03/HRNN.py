@@ -6,7 +6,9 @@ class HRNN:
     def __init__(self, X):
         self.X = X
         self.weights = X.T.dot(X)
-        self.nneurons = len(X)
+        for i in range(self.weights.shape[0]):
+            self.weights[i,i] = 0
+#         self.nneurons = len(X)
         self.activations = None
 
     def plotter(self, activation):
